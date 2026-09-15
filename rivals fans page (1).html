@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rivals Content - Exclusive Access</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: #0d0e12;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Main Website Page Content */
+    .container {
+      text-align: center;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      max-width: 500px;
+      width: 90%;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 15px;
+      color: #ff3e3e;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #cccccc;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #ff3e3e, #b30000);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 62, 62, 0.4);
+    }
+
+    /* Retro Error Dialog Windows */
+    .error-window {
+      position: absolute;
+      width: 320px;
+      background-color: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #000000 #000000 #ffffff;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
+      font-family: 'Courier New', Courier, monospace;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .title-bar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      padding: 3px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .close-btn {
+      background: #c0c0c0;
+      border: 1px solid;
+      border-color: #ffffff #000000 #000000 #ffffff;
+      width: 16px;
+      height: 14px;
+      font-size: 10px;
+      line-height: 10px;
+      text-align: center;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .window-body {
+      padding: 20px 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .error-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #e60000;
+      border-radius: 50%;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+
+    .error-message {
+      color: #000000;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .window-footer {
+      padding-bottom: 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ok-btn {
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #000000 #000000 #ffffff;
+      padding: 3px 25px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Red Flash Overlay */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(255, 0, 0, 0.15);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+      z-index: 50;
+    }
+
+    /* Fullscreen Jumpscare Overlay */
+    #jumpscare {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: flashGlitch 0.05s infinite;
+    }
+
+    .scare-face {
+      font-size: 15vw;
+      color: #ff0000;
+      font-family: 'Impact', sans-serif;
+      text-shadow: 0 0 20px #ff0000, 0 0 50px #ff0000;
+      transform: scale(1.2);
+    }
+
+    @keyframes flashGlitch {
+      0% { background-color: #000; transform: translate(0, 0) scale(1); }
+      50% { background-color: #800000; transform: translate(-10px, 10px) scale(1.05); }
+      100% { background-color: #000; transform: translate(10px, -5px) scale(1); }
+    }
+
+    /* Locked Ransomware Screen */
+    #ransom-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #8b0000;
+      color: #ffffff;
+      z-index: 10000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Courier New', Courier, monospace;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .ransom-box {
+      background-color: #000000;
+      border: 4px solid #ff0000;
+      padding: 30px;
+      max-width: 700px;
+      width: 90%;
+      box-shadow: 0 0 30px #000000;
+    }
+
+    .ransom-title {
+      font-size: 2.2rem;
+      color: #ff0000;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    .ransom-text {
+      font-size: 1.1rem;
+      color: #ffffff;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .timer {
+      font-size: 2.5rem;
+      color: #ffcc00;
+      font-weight: bold;
+      margin-bottom: 20px;
+      border: 2px dashed #ffcc00;
+      padding: 10px;
+      display: inline-block;
+    }
+
+    .btc-address {
+      background-color: #1a1a1a;
+      color: #00ff00;
+      padding: 10px;
+      font-size: 0.9rem;
+      word-break: break-all;
+      border: 1px solid #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="overlay"></div>
+
+  <!-- Main Trigger Page -->
+  <div class="container">
+    <h1>Rivals Content</h1>
+    <p>Click below to inspect confidential rivals content and system leaks.</p>
+    <button class="btn" onclick="triggerScare()">View Content</button>
+  </div>
+
+  <!-- Jumpscare Display -->
+  <div id="jumpscare">
+    <div class="scare-face">☠️</div>
+  </div>
+
+  <!-- Ransomware Lock Screen -->
+  <div id="ransom-screen">
+    <div class="ransom-box">
+      <div class="ransom-title">⚠️ YOUR FILES ARE ENCRYPTED ⚠️</div>
+      <p class="ransom-text">
+        All your documents, photos, and game data have been locked by <strong>RIVALS_LOCKER</strong>.
+        Attempting to close this window will result in total system loss.
+      </p>
+      <p class="ransom-text" style="color: #ff9999;">Time remaining to send payment:</p>
+      <div class="timer" id="countdown">05:00</div>
+      <p class="ransom-text">Send <strong>0.05 BTC</strong> to the address below:</p>
+      <div class="btc-address">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</div>
+    </div>
+  </div>
+
+  <script>
+    let audioCtx;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    // Retro Error Beep Sound
+    function playScarySound() {
+      initAudio();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const now = audioCtx.currentTime;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.exponentialRampToValueAtTime(40, now + 0.3);
+
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    }
+
+    // Harsh Screech Sound for Jumpscare
+    function playJumpscareSound() {
+      initAudio();
+      const now = audioCtx.currentTime;
+
+      // High Screech
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(2000, now);
+      osc.frequency.linearRampToValueAtTime(800, now + 0.8);
+
+      gain.gain.setValueAtTime(0.8, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.8);
+
+      // Low Distorted Noise
+      const subOsc = audioCtx.createOscillator();
+      const subGain = audioCtx.createGain();
+      subOsc.type = 'square';
+      subOsc.frequency.setValueAtTime(60, now);
+      subGain.gain.setValueAtTime(0.7, now);
+      subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+
+      subOsc.connect(subGain);
+      subGain.connect(audioCtx.destination);
+      subOsc.start(now);
+      subOsc.stop(now + 0.8);
+    }
+
+    function createErrorWindow(xOffset, yOffset) {
+      const win = document.createElement('div');
+      win.className = 'error-window';
+
+      const centerX = (window.innerWidth / 2) - 160;
+      const centerY = (window.innerHeight / 2) - 80;
+
+      win.style.left = (centerX + xOffset) + 'px';
+      win.style.top = (centerY + yOffset) + 'px';
+
+      win.innerHTML = `
+        <div class="title-bar">
+          <span>System message</span>
+          <div class="close-btn" onclick="this.closest('.error-window').remove()">✕</div>
+        </div>
+        <div class="window-body">
+          <div class="error-icon">✕</div>
+          <div class="error-message">Critical error</div>
+        </div>
+        <div class="window-footer">
+          <button class="ok-btn" onclick="this.closest('.error-window').remove()">Ok</button>
+        </div>
+      `;
+
+      document.body.appendChild(win);
+    }
+
+    function flashScreen() {
+      const overlay = document.getElementById('overlay');
+      overlay.style.opacity = '1';
+      setTimeout(() => { overlay.style.opacity = '0'; }, 100);
+    }
+
+    function startTimer() {
+      let seconds = 300;
+      const timerEl = document.getElementById('countdown');
+      setInterval(() => {
+        if (seconds <= 0) return;
+        seconds--;
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const s = String(seconds % 60).padStart(2, '0');
+        timerEl.textContent = `${m}:${s}`;
+      }, 1000);
+    }
+
+    let triggered = false;
+
+    function triggerScare() {
+      if (triggered) return;
+      triggered = true;
+
+      let count = 0;
+      const totalWindows = 10;
+      
+      // Phase 1: Popups
+      const interval = setInterval(() => {
+        const offset = (count - 4) * 25;
+        createErrorWindow(offset, offset);
+        playScarySound();
+        flashScreen();
+
+        count++;
+        if (count >= totalWindows) {
+          clearInterval(interval);
+          
+          // Phase 2: Jumpscare
+          setTimeout(() => {
+            const jumpscareEl = document.getElementById('jumpscare');
+            jumpscareEl.style.display = 'flex';
+            playJumpscareSound();
+
+            // Phase 3: Ransomware Screen
+            setTimeout(() => {
+              jumpscareEl.style.display = 'none';
+              document.getElementById('ransom-screen').style.display = 'flex';
+              startTimer();
+            }, 800); // Jumpscare duration
+          }, 300);
+        }
+      }, 120);
+    }
+  </script>
+</body>
+</html>
